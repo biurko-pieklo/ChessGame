@@ -16,5 +16,25 @@
             copy.HasMoved = HasMoved;
             return copy;
         }
+
+        private static IEnumerable<Position> PotentialToPositions(Position fromPosition)
+        {
+            foreach (Direction vDir in new Direction[] { Direction.North, Direction.South })
+            {
+                foreach (Direction hDir in new Direction[] { Direction.East, Direction.West })
+                {
+                    yield return fromPosition + 2 * vDir + hDir;
+                    yield return fromPosition + 2 * hDir + vDir;
+                }
+            }
+        }
+
+        private IEnumerable<Position> MovePositions(Position fromPosition, Board board) {
+            return PotentialToPositions(fromPosition).Where(pos => Board.IsInside(pos) && (board.IsEmpty(pos) || board[pos].Color != Color));
+        }
+
+        public override IEnumerable<Move> GetMoves(Position fromPosition, Board board) {
+            return MovePositions(fromPosition, board).Select(to => new NormalMove(fromPosition, to));
+        }
     }
 }
