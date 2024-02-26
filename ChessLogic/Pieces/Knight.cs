@@ -36,5 +36,14 @@
         public override IEnumerable<Move> GetMoves(Position fromPosition, Board board) {
             return MovePositions(fromPosition, board).Select(to => new NormalMove(fromPosition, to));
         }
+
+        public override bool CanCaptureOpponentKing(Position fromPosition, Board board)
+        {
+            return MovePositions(fromPosition, board).Any(to =>
+            {
+                Piece piece = board[to];
+                return piece != null && piece.Type == PieceType.King;
+            });
+        }
     }
 }

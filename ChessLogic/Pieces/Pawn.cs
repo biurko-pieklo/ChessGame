@@ -75,5 +75,14 @@
         {
             return ForwardMoves(fromPosition, board).Concat(DiagonalMoves(fromPosition, board));
         }
+
+        public override bool CanCaptureOpponentKing(Position fromPosition, Board board)
+        {
+            return DiagonalMoves(fromPosition, board).Any(move =>
+            {
+                Piece piece = board[move.ToPosition];
+                return piece != null && piece.Type == PieceType.King;
+            });
+        }
     }
 }

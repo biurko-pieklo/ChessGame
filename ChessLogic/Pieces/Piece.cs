@@ -34,5 +34,14 @@
         protected IEnumerable<Position> MovePositionsInDirs(Position fromPosition, Board board, Direction[] directions) {
             return directions.SelectMany(direction => MovePositionsInDir(fromPosition, board, direction));
         }
+
+        public virtual bool CanCaptureOpponentKing(Position fromPosition, Board board)
+        {
+            return GetMoves(fromPosition, board).Any(move =>
+            {
+                Piece piece = board[move.ToPosition];
+                return piece != null && piece.Type == PieceType.King;
+            });
+        }
     }
 }
