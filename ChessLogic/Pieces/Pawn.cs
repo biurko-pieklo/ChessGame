@@ -71,7 +71,7 @@
 
                 if (!HasMoved && CanMoveTo(twoMovesPosition, board))
                 {
-                    yield return new NormalMove(fromPosition, twoMovesPosition);
+                    yield return new DoublePawn(fromPosition, twoMovesPosition);
                 }
             }
         }
@@ -82,7 +82,11 @@
             {
                 Position to = fromPosition + direction + forward;
 
-                if (CanCaptureAt(to, board))
+                if (to == board.GetPawnSkipPosition(Color.Opponent()))
+                {
+                    yield return new EnPassant(fromPosition, to);
+                }
+                else if (CanCaptureAt(to, board))
                 {
                     if (to.Row == 0 || to.Row == 7)
                     {
