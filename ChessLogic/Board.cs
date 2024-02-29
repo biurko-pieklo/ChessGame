@@ -115,5 +115,65 @@
 
             return copy;
         }
+
+        public Counting CountPieces()
+        {
+            Counting counting = new Counting();
+
+            foreach (Position pos in PiecePositions())
+            {
+                Piece piece = this[pos];
+                counting.Increment(piece.Color, piece.Type);
+            }
+
+            return counting;
+        }
+
+        public bool InsufficientMaterial()
+        {
+            Counting counting = CountPieces();
+
+            return IsKingVsKing(counting)
+                || IsKingBishopVsKing(counting)
+                || IsKingKnightVsKing(counting)
+                || IsKingBishopVsKingBishop(counting);
+        }
+
+        private static bool IsKingVsKing(Counting counting)
+        {
+            return counting.TotalCount == 2;
+        }
+
+        private static bool IsKingBishopVsKing(Counting counting)
+        {
+            return counting.TotalCount == 3 && (counting.White(PieceType.Bishop) == 1 || counting.Black(PieceType.Bishop) == 1);
+        }
+
+        private static bool IsKingKnightVsKing(Counting counting)
+        {
+            return counting.TotalCount == 3 && (counting.White(PieceType.Knight) == 1 || counting.Black(PieceType.Knight) == 1);
+        }
+
+        private bool IsKingBishopVsKingBishop(Counting counting)
+        {
+            if (counting.TotalCount != 4) {
+                return false;
+            }
+            
+            if (counting.White(PieceType.Bishop) != 1 || counting.Black(PieceType.Bishop) != 1)
+            {
+                return false;
+            }
+
+            Position whiteBishopPos = FindPiece(Player.White, PieceType.Bishop);
+            Position blackBishopPos = FindPiece(Player.Black, PieceType.Bishop);
+
+            return whiteBishopPos.SquareColor() == blackBishopPos.SquareColor();
+        }
+
+        private Position FindPiece(Player color, PieceType type)
+        {
+            return PiecePositionsFor(color).First(pos => this[pos].Type == type);
+        }
     }
 }
